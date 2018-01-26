@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="CoursesAppModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Course">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" />
+    <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="StudentXCourses" Relationship="Self.FK_StudentXCourse_Course" FromRole="Course" ToRole="StudentXCourse" />
+  </EntityType>
+  <EntityType Name="Student">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" />
+    <Property Name="FNAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="LNAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="StudentXCourses" Relationship="Self.FK_StudentXCourse_Student1" FromRole="Student" ToRole="StudentXCourse" />
+  </EntityType>
+  <EntityType Name="StudentXCourse">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="COURSE_ID" Type="Int32" Nullable="false" />
+    <Property Name="STUDENT_ID" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Course" Relationship="Self.FK_StudentXCourse_Course" FromRole="StudentXCourse" ToRole="Course" />
+    <NavigationProperty Name="Student" Relationship="Self.FK_StudentXCourse_Student1" FromRole="StudentXCourse" ToRole="Student" />
+  </EntityType>
+  <Association Name="FK_StudentXCourse_Course">
+    <End Role="Course" Type="Self.Course" Multiplicity="1" />
+    <End Role="StudentXCourse" Type="Self.StudentXCourse" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Course">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="StudentXCourse">
+        <PropertyRef Name="COURSE_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_StudentXCourse_Student1">
+    <End Role="Student" Type="Self.Student" Multiplicity="1" />
+    <End Role="StudentXCourse" Type="Self.StudentXCourse" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Student">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="StudentXCourse">
+        <PropertyRef Name="STUDENT_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="CoursesAppEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Courses" EntityType="Self.Course" />
+    <EntitySet Name="Students" EntityType="Self.Student" />
+    <EntitySet Name="StudentXCourses" EntityType="Self.StudentXCourse" />
+    <AssociationSet Name="FK_StudentXCourse_Course" Association="Self.FK_StudentXCourse_Course">
+      <End Role="Course" EntitySet="Courses" />
+      <End Role="StudentXCourse" EntitySet="StudentXCourses" />
+    </AssociationSet>
+    <AssociationSet Name="FK_StudentXCourse_Student1" Association="Self.FK_StudentXCourse_Student1">
+      <End Role="Student" EntitySet="Students" />
+      <End Role="StudentXCourse" EntitySet="StudentXCourses" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
